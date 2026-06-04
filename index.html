@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <title>Egyszerű drag-and-drop elem</title>
+
+  <link rel="stylesheet" href="body.css">
+  <link rel="stylesheet" href="./plugins/basic/nodes/node.css">
+  <link rel="stylesheet" href="./plugins/basic/behaviors/draggable.css">
+  <link rel="stylesheet" href="./plugins/basic/behaviors/sizeable.css">
+  <link rel="stylesheet" href="./plugins/basic/edges/connection.css">
+</head>
+
+<body>
+  <!-- Csak az app.js-t töltjük be modulként. Az import-láncon át behúzza
+       a graph-ot, a node-renderert, a behavioröket és a kapcsolatkezelőt is.
+       (A connection-manager globális mouseup/mousemove figyelői így aktiválódnak.) -->
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

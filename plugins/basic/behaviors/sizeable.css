@@ -1,0 +1,7 @@
+.sizeable {
+    transform-origin: center center;
+}
+
+.sizeable-hover {
+    outline: 2px dashed orange;
+}

@@ -1,0 +1,39 @@
+/* nodes/node.css */
+
+.node {
+    width: 140px;
+    height: 80px;
+    background: dodgerblue;
+    color: white;
+    position: absolute;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    z-index: 1;                 /* A node-ok az SVG vonalréteg (z-index: 0) fölött legyenek */
+}
+
+/* Bal oldali bemeneti fogópont */
+.input-handle {
+    width: 12px;
+    height: 12px;
+    background: limegreen;
+    border-radius: 50%;
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Jobb oldali kimeneti fogópont */
+.output-handle {
+    width: 12px;
+    height: 12px;
+    background: red;
+    border-radius: 50%;
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+}

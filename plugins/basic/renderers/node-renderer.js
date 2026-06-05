@@ -1,15 +1,15 @@
 // nodes/node-renderer.js
 // Az ADATBÓL (nodeData) DOM node-ot épít, és karbantartja.
 // Ez a réteg köti össze a graph-ot a DOM-mal — egy irányban: adat -> DOM.
+//
+// VÁLTOZÁS: a húzás (drag) már NEM itt él. A node-mozgatást a vászon (canvas.js)
+// intézi, vászon-szinten, egyetlen mechanizmussal. Ezért a korábbi
+// makeDragCallbacks + a graph drag-rétegének importjai INNEN KIKERÜLTEK.
+// A renderer már csak a node felépítéséért és a NODE-onkénti behaviorökért
+// (pl. sizeable) felel.
 
 import { behaviors } from "../behaviors/_behaviors.js";
-import {
-    startNodeDrag,
-    updateNodeDrag,
-    getNodePosition
-} from "../../../core/graph.js";
-import { endNodeDrag } from "../../../core/operations/move-node.js";
-import { renderEdges } from "./edge-renderer.js";
+import { getNodePosition } from "../../../core/graph.js";
 import { startConnection } from "../edges/connection-manager.js";
 import { getType } from "../nodes/_types.js";
 import { registerNode } from "../../../core/node-registry.js";
@@ -29,43 +29,26 @@ function applyPosition(div, nodeId) {
 // Az 'active' objektumban tartjuk a behaviorönként visszakapott cleanup-okat.
 function syncBehaviors(div, nodeData, active) {
 
-    // Felrakás: ami a listában van, de még nincs aktív
+    // Felrakás: ami a listában van, de még nincs aktív.
     nodeData.behaviors.forEach(function (name) {
+
+        // VÉDELEM: a "draggable" kikerült a registryből (a vászon kezeli).
+        // Ha egy régi node-adat vagy mentett gráf még listázza, NE szálljon el —
+        // egyszerűen kihagyjuk az ismeretlen/eltávolított behaviorneveket.
+        if (!behaviors[name]) return;
+
         if (!active[name]) {
-            active[name] = behaviors[name](div, makeDragCallbacks(div, nodeData.id));
+            active[name] = behaviors[name](div);            // a behavior már nem kap drag-callbacket
         }
     });
 
-    // Leszedés: ami aktív, de már nincs a listában
+    // Leszedés: ami aktív, de már nincs a listában.
     Object.keys(active).forEach(function (name) {
         if (!nodeData.behaviors.includes(name)) {
             active[name]();                                 // cleanup meghívása
             delete active[name];
         }
     });
-}
-
-// A draggable behavior callback-jei. A húzás fázisait a graph drag-rétegére
-// kötik, és minden mozdulatnál frissítik a node DOM-ját ÉS az edge-eket.
-// (A sizeable nem használ callback-et, de a közös aláírás miatt megkapja —
-//  egyszerűen figyelmen kívül hagyja.)
-function makeDragCallbacks(div, nodeId) {
-
-    return {
-        onStart: function (x, y) {
-            startNodeDrag(nodeId, x, y);                    // A node "kiválik" az interakcióba
-        },
-        onMove: function (x, y) {
-            updateNodeDrag(x, y);                           // Csak a dragging frissül (graph érintetlen)
-            applyPosition(div, nodeId);                     // A DOM node követi
-            renderEdges(null);                              // Az edge-ek újraszámolnak (getNodePosition-ből)
-        },
-        onEnd: function () {
-            endNodeDrag();                                  // A végső pozíció visszaíródik a graph-ba
-            applyPosition(div, nodeId);                     // Biztos, ami biztos: a graph szerint helyre
-            renderEdges(null);
-        }
-    };
 }
 
 // Egy handle DOM-elemet hoz létre, és RÁÍRJA a dataset-be a node-id-t és a
@@ -100,6 +83,7 @@ export function createNodeElement(nodeData) {
     div.classList.add("node--" + nodeData.type);           // típus-specifikus CSS horog (pl. node--default)
 
     div.dataset.id = nodeData.id;                           // az id a DOM-on is elérhető
+                                                            // (a vászon EBBŐL azonosítja a húzott node-ot)
 
     // A node felirata a descriptor title-jéből (ha nincs leírás, marad üres).
     const titleEl = document.createElement("div");

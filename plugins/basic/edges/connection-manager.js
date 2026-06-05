@@ -68,7 +68,8 @@ document.addEventListener("mouseup", function (event) {
             target.handle
         );
 
-        console.log("Edge létrehozva (graph):");
+        const edge = addEdge(connectionDrag.sourceId, connectionDrag.sourceHandle, target.nodeId, target.handle);
+        console.log("Edge létrehozva (graph):", edge);
     }
 
     connectionDrag = null;                                  // A húzás vége (sikerült vagy sem)

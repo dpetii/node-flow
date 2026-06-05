@@ -7,6 +7,12 @@
 import { addNode } from "./core/operations/add-node.js";
 import { createNodeElement } from "./plugins/basic/renderers/node-renderer.js";
 import { createSaveLoadButtons } from "./ui/save-load.js";
+import { initCanvasDragging } from "./canvas.js";
+
+// A vászon-szintű húzás bekapcsolása. A node-mozgatás mostantól a vászon
+// alap adottsága — minden node-ra érvényes, egyetlen mechanizmussal.
+// (Nem node-onkénti behavior többé.)
+initCanvasDragging();
 
 // Az utolsó kattintás helye, hogy oda kerüljön az új node
 let lastClickX = 100;

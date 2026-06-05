@@ -1,0 +1,16 @@
+{
+  "formatVersion": "1.0",
+
+  "type": "default",
+
+  "header": {
+    "title": "Default"
+  },
+
+  "handles": [
+    { "side": "input",  "name": "in",  "type": "any", "color": "limegreen" },
+    { "side": "output", "name": "out", "type": "any", "color": "red" }
+  ],
+
+  "behaviors": ["sizeable"]
+}
